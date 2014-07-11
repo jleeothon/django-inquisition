@@ -1,4 +1,4 @@
-# django-inquisition
+# inquisition
 
 Flexible search integrated into [Django](https://www.djangoproject.com/) managers.
 
