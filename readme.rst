@@ -18,10 +18,10 @@ Everybody wants to make searches to Django managers, right? With this app, you c
 Requirements
 ------------
 
-- Python 3.4 (probaby works with any Python 3).
-- Django 1.6 (probably works with any Django).
+- Python 3.4 (probaby works with any Python 3)
+- Django 1.6 (probably works with any Django)
 
-(Yeah, I know, it sucks).
+Yeah, I know, it sucks.
 
 ---------------
 Getting started
@@ -75,7 +75,7 @@ Notes:
 Why & when it works
 -------------------
 
-> Only ``CharField``s are currently supported, and the type of search is always an ``icontains``. Basically, any model instance for which every word split from the ``q`` string matches (``icontains``) one or more field provided in ``search_fields`` will be returned in a queryset. This queryset will be ordered if ``order_by`` is provided.
+Only lookup on ``CharField`` are currently supported, and the type of search is always an ``icontains``. Basically, any model instance for which every word split from the ``q`` string matches (``icontains``) one or more field provided in ``search_fields`` will be returned in a queryset. This queryset will be ordered if ``order_by`` is provided.
 
 ---------
 Proposals
@@ -110,7 +110,7 @@ The following example is just a draft example::
             # 'field5': ('endswith', '
         }
 
-..::
+::
 
     # somewhere else
 
