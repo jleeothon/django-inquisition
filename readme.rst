@@ -2,7 +2,7 @@
 inquisition
 ===========
 
-Flexible search integrated into Django_ managers
+Search integrated into Django_ managers
 
 .. _Django: https://www.djangoproject.com/
 
