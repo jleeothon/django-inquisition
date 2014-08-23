@@ -27,13 +27,15 @@ Yeah, I know, it sucks.
 Getting started
 ---------------
 
-To install the latest release
+To install the latest release::
+
+    pip install django-inquisition
 
 To install the latest development version::
 
     pip install git+git://github.com/jleeothon/inquisition.git
 
-If you want to test the latest features and contribute to making this piece of software more robust and 
+If you want to test the latest features, go bug hunting, and to contribute to making this piece of software more robust, try the development version.
 
 -----
 Usage
@@ -43,30 +45,40 @@ Usage
 The managers
 ~~~~~~~~~~~~
 
-A.k.a. inquisitioners.
+A.k.a. inquisitioners:
 
-Currently, the search manager (aka "inquisitioners") can be included as a mixin (if you also want to implement another mixin) or a class (if you're only extending this class).
+- SearchManagerMixin
+- SearchManager
+- SimpleQSearchManagerMixin
+- SimpleQSearchManager
+
+Currently, the search manager can be included as a mixin or a class (if you're only extending this functionality).
 
 First, create your own inquisitioner subclass::
 
     # managers.py
+    
+    from django.db import models
+    import inquisition
 
-    class PokemonManager(inquisition.SimpleQSearchManager):
+    class PokemonManager(inquisition.SimpleQSearchManagerMixin, models.Manager):
         search_fields = ['name', 'poketype__name']
         order_by = ['name', 'number']
 
     # models.py
 
     from django.db include models
+    from .managers import PokemonManager
 
     class Pokemon(models.Model):
         name = CharField(max_length=50)
         poketype = ForeignKey('PokeType')
         # TODO poketype2
         
-        objects = Pokemon.managers.PokemonManager()
+        objects = PokemonManager()
 
 Notes:
+
 - ``search_fields`` support lookups across models.
 - ``order_by`` supports the same "reverse" syntax as querysets, i.e. ``"-name"`` to order from Z to A.
 - The above are true because they're internally dealt with using Django's querysets.
