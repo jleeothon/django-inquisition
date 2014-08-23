@@ -12,7 +12,7 @@ Version 0.1
 Introduction
 ------------
 
-Everybody wants to make searches to Django managers, right? With this app, you can make simple searches such as ``Pokemon.objects.search(q="saur")`` and your manager will know how to find Bulbasaur, Ivysaur and Venasaur; or ``Pokemon.objects.search(q="nin Ground")`` and you'll get Nincada (Bug/Ground) but not Ninjask (Bug/Flying).
+Everybody wants to make searches to Django managers, right? With this app, you can make simple searches such as ``Pokemon.objects.search(q="saur")`` and your manager will know how to find Bulbasaur, Ivysaur and Venasaur; or ``Pokemon.objects.search(q="nin Ground")`` and you'll get Nincada (``Bug``/``Ground``) but not Ninjask (``Bug``/``Flying``).
 
 ------------
 Requirements
@@ -75,14 +75,14 @@ Notes:
 Why & when it works
 -------------------
 
-> Only `CharField`s are currently supported, and the type of search is always an ``icontains``. Basically, any model instance for which every word split from the ``q`` string matches (``icontains``) one or more field provided in ``search_fields`` will be returned in a queryset. This queryset will be ordered if ``order_by`` is provided.
+> Only ``CharField``s are currently supported, and the type of search is always an ``icontains``. Basically, any model instance for which every word split from the ``q`` string matches (``icontains``) one or more field provided in ``search_fields`` will be returned in a queryset. This queryset will be ordered if ``order_by`` is provided.
 
 ---------
 Proposals
 ---------
 
 Wishing that:
-- Searches will not only work on ``CharField``s but also number fields.
+- Searches will not only work on ``CharField`` but also number fields.
 - We can specify something other than ``icontains`` for the type of lookup.
 - We can specify, for every "search field", against what keyword to lookup.
 - We might want to specify the words to be searched for in ``*args`` instead of a ``'q'`` keyword argument.
@@ -92,8 +92,6 @@ We might be able to achieve the above stated throught providing tuples instead o
 But we should be careful about how to deal with the special ``'q'`` keyword argument. We might want to include it as ``*args`` instead of a ``'q'`` in ``**kwargs``.
 
 The following example is just a draft example::
-
-** TODO: this example sucks.**
 
     # models.py or managers.py
 
@@ -128,7 +126,7 @@ The easiest way would be make a list of numbers from elements in ``*args`` that 
 Type of lookup
 ~~~~~~~~~~~~~~
 
-Currently, it is ``icontains`` for ``CharField``s, but it could be plain equality check. For number fields, it could be plain equality check.
+Currently, it is ``icontains`` for ``CharField`` but it could be plain equality check. For number fields, it could be plain equality check.
 
 To specify the type of lookup, we should use a ``lookup_types`` dictionary as exemplified above.
 
