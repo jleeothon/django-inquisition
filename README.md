@@ -1,8 +1,8 @@
 # inquisition
 
-Flexible search integrated into [Django](https://www.djangoproject.com/) managers.
+Flexible search integrated into [Django](https://www.djangoproject.com/) managers
 
-## Version 0.1
+Version 0.1
 
 ## Introduction
 
@@ -23,7 +23,9 @@ I don't know yet how to make this installable >_<. Just copy & paste anything yo
 
 ## Usage
 
-### The managers a.k.a. "inquisitioners"
+### The managers
+
+A.k.a. inquisitioners.
 
 Currently, the search manager (aka "inquisitioners") can be included as a mixin (if you also want to implement another mixin) or a class (if you're only extending this class).
 
