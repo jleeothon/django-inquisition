@@ -17,7 +17,7 @@ class SearchManagerMixin(object):
     Provides an interface to search objects based on `args` and `kwargs`.
     """
 
-    order_fields = list()
+    order_fields = tuple()
 
     def search(self, queryset=None, *args, **kwargs):
         queryset = queryset or self.get_queryset()
@@ -39,7 +39,7 @@ class SimpleQSearchManagerMixin(SearchManagerMixin):
     Related fields can be also queryied upon.
     """
 
-    search_fields = list()
+    search_fields = tuple()
     should_split_q = True
 
     def search(self, queryset=None, *args, **kwargs):
