@@ -13,3 +13,6 @@ class TestBikeSparePart(TestCase):
         self.bike3 = BikeSparePart.create("Tubo 20 A/V")
         self.bike4 = BikeSparePart.create("Tubo 20 E/V")
         self.bike5 = BikeSparePart.create("Tubo 20 E/V")
+
+    def test_search(self):
+        BikeSparePart.objects.search("Llanta")
