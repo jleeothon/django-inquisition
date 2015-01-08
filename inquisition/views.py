@@ -1,8 +1,11 @@
 from django.views import generic
 
+
+__all__ = ['SearchView']
+
+
 class SearchView(generic.edit.FormMixin, generic.ListView):
     """
-    
     """
 
     http_method_names = ['get']
