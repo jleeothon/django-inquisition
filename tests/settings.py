@@ -1,8 +1,10 @@
+import django
+
 SECRET_KEY = 'fake-key'
 
 
 INSTALLED_APPS = [
-    "tests",
+    'tests',
 ]
 
 
@@ -13,6 +15,9 @@ DATABASES = {
 }
 
 
-# MIDDLEWARE_CLASSES = (
-#     'django.middleware.common.CommonMiddleware',
-# )
+MIDDLEWARE_CLASSES = (
+    'django.middleware.common.CommonMiddleware',
+)
+
+if django.VERSION[:2] < (1, 6):
+    TEST_RUNNER = 'discover_runner.DiscoverRunner'
