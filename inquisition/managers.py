@@ -45,7 +45,7 @@ class LookupManagerMixin(object):
             self.search_fields = search_fields
         super(LookupManagerMixin, self).__init__(*args, **kwargs)
 
-    def search(self, *args, queryset=None, **kwargs):
+    def search(self, *args, **kwargs):
         """Search for anything in args and in search_fields
 
         In summary, produces the queryset of all results that each arg from
@@ -56,7 +56,7 @@ class LookupManagerMixin(object):
         And reduces factors like:
             factor1 & factor2 & ...
         """
-        queryset = queryset or self.get_queryset()
+        queryset = kwargs.pop('queryset', self.get_queryset())
         query_keys = ["%s__icontains" % field for field in self.search_fields]
         query_factors = []
         for word in args:
