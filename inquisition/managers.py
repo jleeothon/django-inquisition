@@ -1,82 +1,81 @@
-import functools
+from functools import reduce
 
 from django.db import models
 from django.db.models import Q
 
 
 __all__ = [
-    'SearchManagerMixin',
+    'LookupManager',
+    'LookupManagerMixin',
+    'OrderedSearchManager',
+    'OrderedSearchManagerMixin',
     'SearchManager',
-    'SimpleQSearchManagerMixin',
-    'SimpleQSearchManager',
+    'SearchManagerMixin',
 ]
 
 
-class SearchManagerMixin(object):
-    """
-    Provides an interface to search objects based on `args` and `kwargs`.
-    """
+class OrderedSearchManagerMixin(object):
 
-    order_fields = tuple()
+    search_fields_order = tuple()
 
-    def search(self, queryset=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
+        search_fields_order = kwargs.pop('search_order_fields', None)
+        if search_fields_order:
+            self.search_fields_order = search_fields_order
+        super(OrderedSearchManagerMixin, self).__init__(*args, **kwargs)
+
+    def search(self, queryset=None):
         queryset = queryset or self.get_queryset()
-        if self.order_fields:
-            queryset = queryset.order_by(*self.order_fields)
+        if self.search_fields_order:
+            queryset = queryset.order_by(*self.search_fields_order)
         return queryset
+
+
+class OrderedSearchManager(OrderedSearchManagerMixin, models.Manager):
+    pass
+
+
+class LookupManagerMixin(object):
+
+    search_fields = tuple()
+
+    def __init__(self, *args, **kwargs):
+        search_fields = kwargs.pop('search_fields', None)
+        if search_fields:
+            self.search_fields = search_fields
+        super(LookupManagerMixin, self).__init__(*args, **kwargs)
+
+    def search(self, *args, queryset=None, **kwargs):
+        """Search for anything in args and in search_fields
+
+        In summary, produces the queryset of all results that each arg from
+        args at least once in any of the fields in "search_fields"
+
+        For every word, produces a "factor" the the form:
+            Q(field1__icontains:word1) | Q(field2__icontains:word1) | ...
+        And reduces factors like:
+            factor1 & factor2 & ...
+        """
+        queryset = queryset or self.get_queryset()
+        query_keys = ["%s__icontains" % field for field in self.search_fields]
+        query_factors = []
+        for word in args:
+            query_pairs = [{k: word} for k in query_keys]
+            query_objects = [Q(**qo) for qo in query_pairs]
+            query_factor = reduce(lambda x, y: x | y, query_objects)
+            query_factors.append(query_factor)
+        query_product = reduce(lambda x, y: x & y, query_factors)
+        queryset = queryset.filter(query_product)
+        return queryset
+
+
+class LookupManager(LookupManagerMixin, models.Manager):
+    pass
+
+
+class SearchManagerMixin(LookupManagerMixin, OrderedSearchManagerMixin):
+    pass
 
 
 class SearchManager(SearchManagerMixin, models.Manager):
-    """
-    Provides an interface to search objects based on `args` and `kwargs`.
-    """
-
-
-class SimpleQSearchManagerMixin(SearchManagerMixin):    
-    """
-    Provides a search method that performs icontains queries on each field
-    provided in `search_fields`. Only CharField will be accepted.
-    Related fields can be also queryied upon.
-    """
-
-    search_fields = tuple()
-    should_split_q = True
-
-    def search(self, queryset=None, *args, **kwargs):
-        """
-        
-        """
-        queryset = queryset or self.get_queryset()
-        q = kwargs.get('q', None)
-        if self.should_split_q:
-            words = q.split()
-            return self.split_search(queryset, *words)
-        lookups = ["%s__icontains" % field for field in self.search_fields]
-        query_objects = [{lookup: q} for lookup in self.lookups]
-        query_objects = [Q(**qo) for qo in query_objects]
-        query_objects = functools.reduce(lambda x, y: x | y, query_objects)
-        queryset = queryset.filter(query_objects).distinct()
-        return super().search(queryset)
-        
-    def split_search(self, queryset=None, *args, **kwargs):
-        """
-        The items to search upon are `args`.
-        """
-        queryset = queryset or self.get_queryset()
-        lookups = ["%s__icontains" % field for field in self.search_fields]
-        results = list()
-        for word in args:
-            query_objects = [{lookup: word} for lookup in lookups]
-            query_objects = [Q(**qo) for qo in query_objects]
-            query_objects = functools.reduce(lambda x, y: x | y, query_objects)
-            results.append(self.filter(query_objects))
-        objects = set(results[0])
-        for result in results[1:]:
-            objects = objects.intersection(result)
-        queryset = self.filter(pk__in=[o.pk for o in objects])
-        return queryset
-
-
-class SimpleQSearchManager(SimpleQSearchManagerMixin, models.Manager):
-    """
-    """
+    pass

@@ -1,5 +1,6 @@
 from django import forms
 
+
 class SimpleSearch(forms.Form):
     """
     Provides a simple search form with a single field for querying.

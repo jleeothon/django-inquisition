@@ -1,8 +1,3 @@
-from inquisition.forms import SimpleSearchForm
-
-from inquisition.managers import SearchManagerMixin,
-                                 SearchManager,
-                                 SimpleQSearchManagerMixin,
-                                 SimpleQSearchManager
-
-from inquisition.views import SearchView
+from inquisition.forms import *
+from inquisition.managers import *
+from inquisition.views import *
