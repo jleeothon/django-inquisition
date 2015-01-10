@@ -1,4 +1,6 @@
 from functools import reduce
+from operator import and_
+from operator import or_
 
 from django.db import models
 from django.db.models import Q
@@ -61,10 +63,10 @@ class LookupManagerMixin(object):
         query_factors = []
         for word in args:
             query_pairs = [{k: word} for k in query_keys]
-            query_objects = [Q(**qo) for qo in query_pairs]
-            query_factor = reduce(lambda x, y: x | y, query_objects)
+            query_objects = [Q(**qp) for qp in query_pairs]
+            query_factor = reduce(or_, query_objects)
             query_factors.append(query_factor)
-        query_product = reduce(lambda x, y: x & y, query_factors)
+        query_product = reduce(and_, query_factors)
         queryset = queryset.filter(query_product)
         return queryset
 
